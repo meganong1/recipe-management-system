@@ -1,0 +1,319 @@
+	AuthorID	INT PRIMARY KEY,
+	FirstName	VARCHAR(20),
+	LastName	VARCHAR(20),
+	Email		VARCHAR(20)
+);
+
+-- NOTE: For this relation, we cannot enforce the total participation constraint in the ER diagram between Author and Recipe without assertions in SQL.
+
+CREATE TABLE NutritionProfile (
+	NutritionProfileID	INT PRIMARY KEY,
+	Calories			INT,
+	Carbohydrates		INT,
+	Fats				INT,
+	Protein				INT
+);
+
+CREATE TABLE Ingredient (
+	IngredientName			VARCHAR(20) PRIMARY KEY,
+	AllergenInformation 	VARCHAR(250),
+	Seasonality				CHAR(6),
+	IngredientType			VARCHAR(20),
+	NutritionProfileID		INT UNIQUE,
+	FOREIGN KEY (NutritionProfileID) REFERENCES NutritionProfile(NutritionProfileID)
+		ON DELETE SET NULL
+		ON UPDATE CASCADE
+);
+
+-- NOTE: For this relation, we cannot enforce the total participation constraint in the ER diagram between Ingredient and UsedIn with assertions in SQL.
+-- NOTE: Set the FK field to null if FK is deleted because the field isn’t constrained by not null or total participation between this relation and the FK’s relation.
+
+CREATE TABLE CookingTechnique1 (
+	HeatSource		VARCHAR(20) PRIMARY KEY,
+	DryOrMoistHeat 	VARCHAR(5),
+);
+
+CREATE TABLE CookingTechnique2 (
+	TechniqueName		VARCHAR(20) PRIMARY KEY,
+	DifficultyRating	INT,
+	HeatSource			VARCHAR(20),
+	FOREIGN KEY (HeatSource) REFERENCES CookingTechnique1(HeatSource)
+		ON DELETE SET NULL
+		ON UPDATE CASCADE
+);
+
+-- NOTE: Set the FK field to null if FK is deleted because the field isn’t constrained by not null or total participation between this relation and the FK’s relation.
+
+CREATE TABLE Electric1 (
+	MotorRPM	INT,
+	Torque 		FLOAT,
+	Wattage		INT,
+	PRIMARY KEY (MotorRPM, Torque)
+);
+
+CREATE TABLE Electric2 (
+	EquipmentID			INT PRIMARY KEY,
+	EquipmentName 		VARCHAR(20),
+	EDescription		VARCHAR(500),
+	MaintenanceLevel	NUMERIC(1,0),
+	MotorRPM			INT,
+	Torque 				FLOAT,
+	FOREIGN KEY (MotorRPM, Torque) REFERENCES Electric1(MotorRPM, Torque)
+		ON DELETE SET NULL
+		ON UPDATE CASCADE
+);
+
+-- NOTE: Set the FK field to null if FK is deleted because the field isn’t constrained by not null or total participation between this relation and the FK’s relation.
+
+CREATE TABLE Manual1 (
+	EquipmentName   	VARCHAR(20) PRIMARY KEY,
+	ErgonomicRating   INT
+);
+
+CREATE TABLE Manual2 (
+	EquipmentID			INT PRIMARY KEY, 
+	EquipmentName		VARCHAR(20),
+	EDescription		VARCHAR(500),
+	MaintenanceLevel	NUMERIC(1, 0),
+	ErgonomicRating		NUMERIC(1, 0),
+	FOREIGN KEY (EquipmentName) REFERENCES Manual1(EquipmentName) 
+		ON DELETE SET NULL
+		ON UPDATE CASCADE
+);
+
+-- NOTE: Set the FK field to null if FK is deleted because the field isn’t constrained by not null or total participation between this relation and the FK’s relation.
+
+CREATE TABLE Recipe (
+	RecipeName		VARCHAR(20) PRIMARY KEY,
+	Servings		FLOAT,
+	Cuisine			VARCHAR(20),
+	TotalTime		FLOAT,
+	AuthorID		INT NOT NULL,
+	FOREIGN KEY (AuthorID) REFERENCES Author(AuthorID) 
+		ON UPDATE CASCADE
+);
+
+-- NOTE: For this relation, we cannot enforce the total participation constraint in the ER diagram between Recipe and UsedIn with assertions in SQL.
+-- NOTE: Since this relation is bound by a total participation constraint, the FK value is not allowed to be deleted until its field here is replaced. No action is taken by default.
+
+CREATE TABLE PreparationStep1 (
+	RequiredTemperature		FLOAT PRIMARY KEY,
+	Duration				FLOAT
+);
+
+CREATE TABLE PreparationStep2 (
+	RecipeName				VARCHAR(20),
+	PreparationStepID		INT,
+	PSDescription			VARCHAR(500),
+	RequiredTemperature		FLOAT,
+	PRIMARY KEY (RecipeName, PreparationStepID),
+	FOREIGN KEY (RecipeName) REFERENCES Recipe(RecipeName) 
+		ON UPDATE CASCADE,
+	FOREIGN KEY (RequiredTemperature) REFERENCES PreparationStep1(RequiredTemperature)
+		ON DELETE SET NULL
+		ON UPDATE CASCADE
+);
+
+-- NOTE: Since this relation is bound by a total participation constraint, the first FK value is not allowed to be deleted until its field here is replaced. No action is taken by default.
+-- NOTE: Set the second FK field to null if FK is deleted because the field isn’t constrained by not null or total participation between this relation and the FK’s relation.
+
+CREATE TABLE Uses (
+	RecipeName		VARCHAR(20),
+	EquipmentID		INT,
+	PRIMARY KEY (RecipeName, EquipmentID),
+	FOREIGN KEY (RecipeName) REFERENCES Recipe(RecipeName)
+		ON DELETE CASCADE
+		ON UPDATE CASCADE,
+	FOREIGN KEY (EquipmentID) REFERENCES Electric2(EquipmentID)
+		ON DELETE CASCADE
+		ON UPDATE CASCADE,
+	FOREIGN KEY (EquipmentID) REFERENCES Manual2(EquipmentID)
+		ON DELETE CASCADE
+		ON UPDATE CASCADE
+);
+
+-- NOTE: Since each FK is not allowed to be null (either explicitly set manually or implicitly set by property of PK) and is not constrained by a total participation constraint, the corresponding tuple of this relation should be deleted if a FK tuple is deleted.
+
+CREATE TABLE Photo (
+	PhotoID        	INT PRIMARY KEY,
+	PDescription 	VARCHAR(500),
+	HEIGHT       	FLOAT,
+	WIDTH         	FLOAT,
+	RecipeName 		VARCHAR(20) NOT NULL, 
+	FOREIGN KEY (RecipeName) REFERENCES Recipe(RecipeName) 
+		ON UPDATE CASCADE
+);
+
+-- NOTE: Since this relation is bound by a total participation constraint, the FK value is not allowed to be deleted until its field here is replaced. No action is taken by default.
+
+CREATE TABLE UsedIn (
+	RecipeName		VARCHAR(20),
+	IngredientName	VARCHAR(20),
+	MeasurementID	INT,
+	PRIMARY KEY (RecipeName, IngredientName, MeasurementID),
+	FOREIGN KEY (RecipeName) REFERENCES Recipe(RecipeName)
+		ON UPDATE CASCADE,
+	FOREIGN KEY (IngredientName) REFERENCES Ingredient(IngredientName)
+		ON UPDATE CASCADE,
+	FOREIGN KEY (MeasurementID) REFERENCES Measurement(MeasurementID)
+		ON UPDATE CASCADE
+);
+
+-- NOTE: For the UsedIn relation, we cannot enforce the total participation constraints in the ER diagram between Recipe, Ingredient, and Measurement without assertions in SQL. 
+-- NOTE: Since this relation is bound by a total participation constraint for each FK, no FK value is allowed to be deleted until its field here is replaced. No action is taken by default.
+
+CREATE TABLE Employs (
+	RecipeName		VARCHAR(20),
+	TechniqueName	VARCHAR(20),
+	PRIMARY KEY (RecipeName, TechniqueName),
+	FOREIGN KEY (RecipeName) REFERENCES Recipe(RecipeName)
+		ON DELETE CASCADE
+		ON UPDATE CASCADE,
+	FOREIGN KEY (TechniqueName) REFERENCES CookingTechnique2(TechniqueName)
+		ON DELETE CASCADE
+		ON UPDATE CASCADE
+);
+
+-- NOTE: Since each FK is not allowed to be null (either explicitly set manually or implicitly set by property of PK) and is not constrained by a total participation constraint, the corresponding tuple of this relation should be deleted if a FK tuple is deleted.
+
+CREATE TABLE TrainsIn (
+	AuthorID		INT,
+	TechniqueName	VARCHAR(20),
+	PRIMARY KEY (AuthorID, TechniqueName),
+	FOREIGN KEY (AuthorID) REFERENCES Author(AuthorID)
+		ON DELETE CASCADE
+		ON UPDATE CASCADE
+	FOREIGN KEY (TechniqueName) REFERENCES CookingTechnique2(TechniqueName)
+		ON DELETE CASCADE
+		ON UPDATE CASCADE
+);
+
+-- NOTE: Since each FK is not allowed to be null (either explicitly set manually or implicitly set by property of PK) and is not constrained by a total participation constraint, the corresponding tuple of this relation should be deleted if a FK tuple is deleted.
+
+CREATE TABLE Measurement (
+	MeasurementID	INT PRIMARY KEY,
+	Volume			FLOAT,
+	NumberOf		INT,
+	Weight			FLOAT,
+);
+
+-- NOTE: For this relation, we cannot enforce the total participation constraint in the ER diagram between Measurement and UsedIn without assertions in SQL.
+
+-----------------------------------------------------
+
+INSERT ALL
+
+INTO Author VALUES (1, "Nigella", "Lawson", "nlawson@chefs.com")
+INTO Author VALUES (2, "Guy", "Fieri", "gfieri@chefs.com")
+INTO Author VALUES (3, "Romain", "Avril", "ravril@chefs.com")
+INTO Author VALUES (4, "Keith", "Pears", "kpears@chefs.com")
+INTO Author VALUES (5, "Julia", "Child", "jchild@chefs.com")
+
+INTO NutritionProfile(1, 55, 11, 1, 4)
+INTO NutritionProfile(2, 41, 10, 1, 0)
+INTO NutritionProfile(3, 20, 5, 0, 1)
+INTO NutritionProfile(4, 40, 9, 1, 2)
+INTO NutritionProfile(5, 22, 4, 1, 2)
+INTO NutritionProfile(6, 95, 25, 0, 1)
+INTO NutritionProfile(7, 32, 7, 0, 2)
+INTO NutritionProfile(8, 150, 12, 8, 8)
+
+INTO Ingredient VALUES ("Broccoli", "www.thermofisher.com/phadia/wo/en/resources/allergen-encyclopedia/f260.html: Anecdotal evidence suggests that Broccoli can occasionally induce symptoms of food allergy in sensitised individuals; however, few studies have been reported to date.", "Autumn", "Vegetable", 1)
+INTO Ingredient VALUES ("Carrot", "https://www.thermofisher.com/phadia/wo/en/resources/allergen-encyclopedia/f31.html: The fleshy edible taproots of carrots may be allergic to some individuals. Ingestion can trigger oral allergy syndrome or pollen food allergy syndrome with symptoms ranging from swelling of lips, tongue and throat, nausea, dysphonia, itching of the nose and ear to even systemic reactions like anaphylaxis in some.", "Summer", "Vegetable", 2)
+INTO Ingredient VALUES ("Lemon", "www.thermofisher.com/phadia/wo/en/resources/allergen-encyclopedia/f208.html: Citrus seed extracts display antigenic profiles, indicative of close phylogenetic relationships.", "Winter", "Fruit", 3)
+INTO Ingredient VALUES ("Chili Pepper", "www.thermofisher.com/phadia/wo/en/resources/allergen-encyclopedia/f279.html: The genus Capsicum includes C. annuum sometimes known as chili pepper. Allergy to Capsicum species is rare. Symptoms can occur after ingestion or inhalation of spice dust.", "Autumn", "Vegetable", 4)
+INTO Ingredient VALUES ("Parsley", "www.thermofisher.com/phadia/wo/en/resources/allergen-encyclopedia/f86.html: Allergic reactions are rare and limited to individual case reports. Symptoms of urticaria–angioedema, contact dermatitis and anaphylaxis have been described in association.", "Autumn", "Vegetable", 5)
+INTO Ingredient VALUES ("Apple", "https://www.thermofisher.com/allergy/wo/en/allergen-fact-sheets/apple.html: While apple allergy is caused by proteins in the fruit, the level of allergens in an apple is influenced by the apple variety, storage conditions, and degree of maturity. In a 2014 European study assessing fruit sensitization rates, apple ranked as the second most frequent inducer of sensitization (after peach) with a rate of 6.5 percent. While an average apple weighs 200 to 250 grams, as little as 5 grams of apple can generate a reaction.", "Autumn", "Fruit", 6)
+INTO Ingredient VALUES ("Scallion", "www.thermofisher.com/phadia/wo/en/resources/allergen-encyclopedia/f48.html: Sporadic reports of allergic reactions exist, with anaphylactic reactions being especially rare. Onion handling can induce rhinoconjunctivitis, asthma and contact dermatitis.", "Spring", "Vegetable", 7)
+INTO Ingredient VALUES ("Milk", "www.thermofisher.com/phadia/wo/en/resources/allergen-encyclopedia/f2.html: The major allergens found in milk are casein in milk coagulum, α-lactalbumin, and β-lactoglobulin in milk whey. Casein possesses a high degree of allergenicity and antigenicity compared to whey proteins and is a heat-stable protein resistant to processing.", "All", "Dairy", 8)
+
+INTO CookingTechnique1 VALUES ("Hot Air", "Dry")
+INTO CookingTechnique1 VALUES ("Fat/Oil", "Dry")
+INTO CookingTechnique1 VALUES ("Water Vapor", "Moist")
+INTO CookingTechnique1 VALUES ("Water", "Moist")
+INTO CookingTechnique1 VALUES ("Radiant/Direct", "Dry")
+INTO CookingTechnique1 VALUES ("Liquid", "Moist")
+
+INTO CookingTechnique2 VALUES ("Roasting", 3, "Hot Air")
+INTO CookingTechnique2 VALUES ("Baking", 2, "Hot Air")
+INTO CookingTechnique2 VALUES ("Deep-frying", 2, "Fat/Oil")
+INTO CookingTechnique2 VALUES ("Steaming", 1, "Water Vapor")
+INTO CookingTechnique2 VALUES ("Boiling", 2, "Water")
+INTO CookingTechnique2 VALUES ("Sauteing", 3, "Fat/Oil")
+
+INTO Electric1 VALUES (50, 2.0, 20)
+INTO Electric1 VALUES (75, 2.5, 15)
+INTO Electric1 VALUES (200, 3.0, 12)
+INTO Electric1 VALUES (15, 1.0, 8)
+INTO Electric1 VALUES (20, 4.0, 65)
+
+INTO Electric2 VALUES (1, "Air Fryer", "Uses hot air circulation to cook, crisp, and roast food with little to no oil.", 0.3, 50, 2.0)
+INTO Electric2 VALUES (2, "Slow Cooker", "Cooks food at low temperatures for long periods, ideal for stews and tenderizing meats.", 0.3, 75, 2.5)
+INTO Electric2 VALUES (3, "Blender", "Ideal for pureeing, crushing ice, and making smoothies or soups.", 0.3, 200, 3.0)
+INTO Electric2 VALUES (4, "Toaster Oven", "A compact oven used for toasting, baking, and reheating, more versatile than a standard toaster.", 0.3, 15, 1.0)
+INTO Electric2 VALUES (5, "Rice Cooker", "Automatically cooks rice to the proper consistency and keeps it warm.", 0.3, 20, 4.0)
+
+INTO Manual1 VALUES ("Spatula", 0)
+INTO Manual1 VALUES ("Whisk", 0)
+INTO Manual1 VALUES ("Hand Grater", 0)
+INTO Manual1 VALUES ("Meshed Sieve", 0)
+INTO Manual1 VALUES ("Tongs", 0)
+
+INTO Manual2 VALUES (1, "Spatula", "Broad blade attached to a handle designed for lifting or stirring", 0, 0)
+INTO Manual2 VALUES (2, "Whisk", "Handle with wired loops for blending ingredients", 0, 0)
+INTO Manual2 VALUES (3, "Hand Grater", "Tool for grating and shredding foods into fine pieces", 0, 0)
+INTO Manual2 VALUES (4, "Meshed Sieve", "Mesh strainer for separating elements from unwanted material", 0, 0)
+INTO Manual2 VALUES (5, "Tongs", "Versatile, hinged tool with two long arms", 0, 0)
+
+INTO Recipe VALUES ("Tacos", 4.0, "Mexican", 1.0, 1)
+INTO Recipe VALUES ("Muffins", 12.0, "American", 1.0, 2)
+INTO Recipe VALUES ("Turkey", 12.0, "American", 6.0, 3)
+INTO Recipe VALUES ("Spaghetti", 4.0, "Italian",  1.0, 4)
+INTO Recipe VALUES ("Congee", 4.0, "Asian", 2.0, 5)
+
+INTO PreparationStep1 VALUES(450, 45)
+INTO PreparationStep1 VALUES(425, 20)
+INTO PreparationStep1 VALUES(200, 10)
+INTO PreparationStep1 VALUES(180, 20)
+INTO PreparationStep1 VALUES(160, 15)
+
+INTO PreparationStep2 VALUES("Turkey", 1, "Roast turkey until the skin is brown.", 450)
+INTO PreparationStep2 VALUES("Muffins", 2, "Continue baking until a toothpick comes out clean", 425)
+INTO PreparationStep2 VALUES ("Spaghetti", 3, "Bring water in a pot to a rolling boil.", 200)
+INTO PreparationStep2 VALUES("Congee", 4, "Reduce heat to low, cover pot with a lid, then simmer.", 180)
+INTO PreparationStep2 VALUES("Tacos", 5, "Cook meat until no pink remains.", 160)
+
+INTO Uses VALUES ("Muffins", 2)
+INTO Uses VALUES ("Tacos"
+INTO Uses VALUES ("Turkey", 4)
+INTO Uses VALUES ("Muffins", 1)
+INTO Uses VALUES ("Tacos", 5)
+
+INTO Photo VALUES (1, "Three soft-shell tacos with beef, tomatoes, avocado, chilli and onions on a black plate on a white background.", 3.5, 4.0, "Tacos")
+INTO Photo VALUES (2, "Five blueberry muffins served on a white plate on a white background.", 3.6, 3.6, "Muffins")
+INTO Photo VALUES (3, "Roast turkey on a white oval platter on a white background.", 4.INTO Photo VALUES (4, "Spaghetti in a white ceramic bowl on wooden table background.", 4.0, 4.0, "Spaghetti")
+INTO Photo VALUES (5, "Congee with scallions in a wooden bowl on a white background. ", 4.0, 3.5, "Congee")
+
+INTO UsedIn VALUES ("Tacos", "Chili Pepper", 4)
+INTO UsedIn VALUES ("Muffins", "Milk", 1)
+INTO UsedIn VALUES ("Turkey", "Lemon", 3)
+INTO UsedIn VALUES ("Spaghetti", "Parsley", 5)
+INTO UsedIn VALUES ("Congee", "Scallion", 2)
+
+INTO Employs VALUES ("Tacos", "Sauteing")
+INTO Employs VALUES ("Muffins", "Baking")
+INTO Employs VALUES ("Turkey", "Roasting")
+INTO Employs VALUES ("Spaghetti", "Boiling")
+INTO Employs VALUES ("Congee", "Boiling")
+
+INTO TrainsIn VALUES (1, "Roasting")
+INTO TrainsIn VALUES (2, "Baking")
+INTO TrainsIn VALUES (3, "Deep-frying")
+INTO TrainsIn VALUES (4, "Steaming")
+INTO TrainsIn VALUES (5, "Steaming")
+
+INTO Measurement VALUES (1, 45.0, NULL, NULL)
+INTO Measurement VALUES (2, NULL, 3, 25.9)
+INTO Measurement VALUES (3, NULL, 1, 121.8)
+INTO Measurement VALUES (4, NULL, 2, 73.4)
+INTO Measurement VALUES (5, NULL, NULL, 14.

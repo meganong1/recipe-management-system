@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- This meta tag ensures that the website renders correctly across different device sizes, enhancing mobile responsiveness. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Link to the external CSS stylesheet. Uncomment if you wish to customize or add styling. -->
+    <!-- <link rel="stylesheet" href="styles.css">   -->
+
+    <title>Join</title>
+    <style>
+        body {
+            text-align: center;
+        }
+        table {
+            margin-left: auto;   
+            margin-right: auto;
+         }
+         #home-link:hover {
+            text-decoration: underline;
+         }
+
+         #home-link {        
+            color: black;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <a id="home-link" href="index.html">Home</a>
+    <hr>
+    <h2>Join</h2>
+    <table id="usedInTable" border="1">
+        <thead>
+            <tr>
+                <th>Recipe Name</th>
+                <th>Ingredient Name</th>
+                <th>Measurement ID</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    <p>Find all the recipes that contain a certain ingredient and the corresponding measurement information. Please enter a valid ingredient name. 
+        <form id="joinTables">
+        Ingredient Name: <input type="text" id="joinIngredient" placeholder="Enter Ingredient Name" required> <br><br>
+        <button type="submit"> filter </button> <br>
+    </form>
+    <!-- A placeholder to display messages related to the join operation. -->
+    <div id="joinResultMsg"></div>
+
+    <h3>Result:</h3>
+    <table id="joinTable" border="1">
+        <thead>
+            <tr>
+                <th>Recipe Name</th>
+                <th>Servings</th>
+                <th>Cuisine</th>
+                <th>Total Time</th>
+                <th>Author ID</th>
+                <th>Measurement ID</th>
+                <th>Volume</th>
+                <th>Number Of</th>
+                <th>Weight</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <br><hr><br> <!-- ========================================================================= -->
+
+
+    <!-- ===================================================================================== -->
+    <!-- External JavaScript file that contains the functionality/logic for the operations above. -->
+    <script src="scripts.js"></script>
+</body>
+</html>

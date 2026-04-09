@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- This meta tag ensures that the website renders correctly across different device sizes, enhancing mobile responsiveness. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Link to the external CSS stylesheet. Uncomment if you wish to customize or add styling. -->
+    <!-- <link rel="stylesheet" href="styles.css">   -->
+
+    <title>Aggregation with HAVING</title>
+    <style>
+        body {
+            text-align: center;
+        }
+        table {
+            margin-left: auto;   
+            margin-right: auto;
+         }
+         #home-link:hover {
+            text-decoration: underline;
+         }
+
+         #home-link {        
+            color: black;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+     <!-- TODO-->
+     <a id="home-link" href="index.html">Home</a>
+    <hr>
+    <h2>Aggregation with HAVING</h2>
+    <p>Find all ingredient types that have an average of at least 2g of protein per serving.</p>
+    <button id="aggrHavingButton" type="button"> execute </button> <br>
+
+    <div id="aggrHavingResultMsg"></div>
+    <h3>Result:</h3>
+    <table id="aggrHavingTable" border="1">
+        <thead>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <br><hr><br> <!-- ========================================================================= -->
+
+    <!-- ===================================================================================== -->
+    <!-- External JavaScript file that contains the functionality/logic for the operations above. -->
+    <script src="scripts.js"></script>
+</body>
+</html>

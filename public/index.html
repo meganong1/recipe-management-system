@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- This meta tag ensures that the website renders correctly across different device sizes, enhancing mobile responsiveness. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Link to the external CSS stylesheet. Uncomment if you wish to customize or add styling. -->
+    <!-- <link rel="stylesheet" href="styles.css">   -->
+
+    <title>Cookbook Application (Team 33)</title>
+
+    <style>
+        body {
+            text-align: center;
+        }
+        nav {
+            background-color: #333333;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            white-space: nowrap;
+        }
+        nav a {
+            flex: 1;                   
+            text-align: center;        
+            color: white;
+            margin-right: 15px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+     <!-- ===================================================================================== -->
+    <div>
+        <a style="font-weight: bold;">Team 33</a>
+        <hr>
+        <h1>Cookbook Application</h1>
+        <!-- Display the current status of the database connection. 
+            !!HERE TO HELP U DEBUGGING, NOT REQUIRED IN YOUR OWN PROJECT!!
+            -->
+        <h3>Database Connection Status:
+            <!-- An in-line placeholder to display connection status. -->
+            <button disabled> 
+                <span id="dbStatus"> </span> 
+            </button>
+            <!-- A loading GIF, will be hided once get the status. -->
+            <img id="loadingGif" class="loading-gif" src="loading_100px.gif" width=30px alt="Loading...">
+        </h3>
+    </div>
+    
+    <nav>
+        <a href="1-insert.html"> Insert </a>
+        <a href="2-update.html"> Update </a>
+        <a href="3-delete.html"> Delete </a>
+        <a href="4-select.html"> Select </a>
+        <a href="5-project.html"> Project </a>
+        <a href="6-join.html"> Join </a>
+        <a href="7-aggrGroupBy.html"> Aggregation with GROUP BY </a>
+        <a href="8-aggrHaving.html"> Aggregation with HAVING </a>
+        <a href="9-nestedAggr.html"> Nested aggregation with GROUP BY </a>
+        <a href="10-division.html"> Division </a>
+    </nav>
+
+    <h2>Reset Tables</h2>
+    <p>If you wish to reset the tables press on the reset button. If this is the first time you're running this page, you MUST use reset</p>
+    <button id="resetTables"> reset </button> <br>
+    <!-- A placeholder to display messages related to the reset operation. -->
+    <div id="resetResultMsg"></div>
+
+    <br><hr><br> <!-- ========================================================================= -->
+
+    <!-- Show tables. Data will be fetched and inserted here dynamically using JavaScript. -->
+    <!-- <h2>Tables</h2>
+    <table id="demotable" border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <br><hr><br> ========================================================================= -->
+
+    <!-- <h2> Insert Values into DemoTable </h2>
+    <form id="insertDemotable">
+        ID: <input type="number" id="insertId" placeholder="Enter ID" required> <br><br>
+        Name: <input type="text" id="insertName" placeholder="Enter Name" maxlength="20"> <br><br>
+
+        <button type="submit"> insert </button> <br>
+    </form>
+    <div id="insertResultMsg"></div>
+
+    <br><hr><br> ========================================================================= -->
+
+    <!-- <h2>Update Name in DemoTable</h2>
+    <p>The values are case sensitive and if you enter in the wrong case, the update statement will not do anything.</p>
+    <form id="updataNameDemotable">
+        Old Name: <input type="text" id="updateOldName" placeholder="Enter Old Name" required> <br><br>
+        New Name: <input type="text" id="updateNewName" placeholder="Enter New Name" maxlength="20"> <br><br>
+
+        <button type="submit"> update </button> <br>
+    </form>
+    A placeholder to display messages related to the update operation. 
+    <div id="updateNameResultMsg"></div>
+
+    <br><hr><br> ========================================================================= -->
+    
+    <!-- <h2>Count the Tuples in DemoTable</h2>
+    <button id="countDemotable"> count </button> <br><br>
+    A placeholder to display the count result.
+     <div id="countResultMsg"></div> <br> 
+
+    <br><hr><br> ========================================================================= -->
+
+    <!-- External JavaScript file that contains the functionality/logic for the operations above. -->
+    <script src="scripts.js"></script>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- This meta tag ensures that the website renders correctly across different device sizes, enhancing mobile responsiveness. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Link to the external CSS stylesheet. Uncomment if you wish to customize or add styling. -->
+    <!-- <link rel="stylesheet" href="styles.css">   -->
+
+    <title>Update</title>
+    <style>
+        body {
+            text-align: center;
+        }
+        table {
+            margin-left: auto;   
+            margin-right: auto;
+         }
+
+         #home-link:hover {
+            text-decoration: underline;
+         }
+
+         #home-link {        
+            color: black;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+     <!-- ===================================================================================== -->
+     <a id="home-link" href="index.html">Home</a>
+     <hr>
+     <h2>Update Values in Photo</h2>
+    <p>Update any or all of PDescription, Height, Width, and RecipeName for a valid PhotoID. If you don't wish to update the RecipeName field, please select the current RecipeName in the dropdown menu. </p>
+    <form id="updatePhotoTable">
+        PhotoID: 
+        <select id="updatePhotoID" required>
+            <option value=""> </option>
+            </select> <br><br>
+        New PDescription: <input type="text" id="updatePDescription" placeholder="Enter New PDescription" maxlength="500"> <br><br>
+        New Height: <input type="number" id="updateNewHeight" placeholder="Enter New Height" step="any" min="0" max="100"> <br><br>
+        New Width: <input type="number" id="updateNewWidth" placeholder="Enter New Width" step="any" min="0" max="100"> <br><br>
+        New RecipeName: 
+        <select id="updateRecipeName" required>
+            <option value=""> </option>
+            </select> <br><br>
+        <button type="submit"> update </button> <br>
+    </form>
+    <!-- A placeholder to display messages related to the update operation. -->
+    <div id="updatePhotoResultMsg"></div>
+
+    <h3>Result:</h3>
+    <table id="phototable" border="1">
+        <thead>
+            <tr>
+                <th>PhotoID</th>
+                <th>PDescription</th>
+                <th>Height</th>
+                <th>Weight</th>
+                <th>RecipeName</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <br><hr><br> <!-- ========================================================================= -->
+
+    <!-- ===================================================================================== -->
+    <!-- External JavaScript file that contains the functionality/logic for the operations above. -->
+    <script src="scripts.js"></script>
+</body>
+</html>

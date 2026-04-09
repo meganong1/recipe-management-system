@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <!-- This meta tag ensures that the website renders correctly across different device sizes, enhancing mobile responsiveness. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Link to the external CSS stylesheet. Uncomment if you wish to customize or add styling. -->
+  <!-- <link rel="stylesheet" href="styles.css">   -->
+
+  <title>Division</title>
+  <style>
+      body {
+          text-align: center;
+      }
+      table {
+          margin-left: auto;   
+          margin-right: auto;
+        }
+        #home-link:hover {
+          text-decoration: underline;
+        }
+
+        #home-link {        
+          color: black;
+          text-decoration: none;
+          font-weight: bold;
+      }
+  </style>
+</head>
+<body>
+  <a id="home-link" href="index.html">Home</a>
+  <hr>
+  <h2>Division</h2>
+
+  <p>Here is a list of all the cooking techniques referenced in the cookbook:</p>
+  <table id="cookingTechniqueTable" border="1">
+    <thead>
+      <tr>
+        <th>Technique Name</th>
+        <th>Difficulty Rating</th>
+        <th>Heat Source</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <br>
+
+  <p>Want to learn from the pros? Here is a list of our most experienced recipe authors
+    who are trained in every cooking technique from the cookbook:</p>
+  <button id="divisionButton">Refresh</button>
+  <div id="divisionResultMsg"></div>
+  <table id="divisionTable" border="1" style="display:none">
+    <thead></thead>
+    <tbody></tbody>
+  </table>
+
+  <br><hr><br>
+
+  <script src="scripts.js"></script>
+  <script>
+    // Load the cooking techniques legend on page load
+    async function fetchAndDisplayCookingTechniques() {
+      const response = await fetch("/cooking-technique-table", { method: "GET" });
+      const responseData = await response.json();
+      const tableBody = document.getElementById("cookingTechniqueTable").querySelector("tbody");
+      tableBody.innerHTML = "";
+      responseData.data.forEach((row) => {
+        const tableRow = tableBody.insertRow();
+        row.forEach((field, index) => {
+          const cell = tableRow.insertCell(index);
+          cell.textContent = field;
+        });
+      });
+    }
+    fetchAndDisplayCookingTechniques();
+  </script>
+</body>
+</html>

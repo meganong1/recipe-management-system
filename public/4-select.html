@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- This meta tag ensures that the website renders correctly across different device sizes, enhancing mobile responsiveness. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Link to the external CSS stylesheet. Uncomment if you wish to customize or add styling. -->
+    <!-- <link rel="stylesheet" href="styles.css">   -->
+
+    <title>Select</title>
+    <style>
+      body {
+        text-align: center;
+      }
+      table {
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      #home-link:hover {
+        text-decoration: underline;
+      }
+
+      #home-link {
+        color: black;
+        text-decoration: none;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <a id="home-link" href="index.html">Home</a>
+    <hr />
+    <h2>Select Values from Recipe</h2>
+    <p>
+      Select Recipes with corresponding RecipeName, Servings, Cuisine,
+      TotalTime, and/or AuthorID.
+    </p>
+    <form id="selectRecipe">
+      <div id="conditions-container">
+        <div class="condition-row">
+          <select class="attribute">
+            <option value="RecipeName">RecipeName</option>
+            <option value="Servings">Servings</option>
+            <option value="Cuisine">Cuisine</option>
+            <option value="TotalTime">TotalTime</option>
+            <option value="AuthorID">AuthorID</option>
+          </select>
+
+          <select class="operator">
+            <option value="=">=</option>
+            <option value="<">&lt;</option>
+            <option value=">">&gt;</option>
+            <option value="<=">&le;</option>
+            <option value=">=">&ge;</option>
+          </select>
+
+          <input type="text" class="value" placeholder="Enter value" required />
+        </div>
+      </div>
+
+      <br />
+
+      <button type="button" id="add-and">AND</button>
+      <button type="button" id="add-or">OR</button>
+
+      <br />
+      <br />
+
+      <button type="submit">Select</button>
+    </form>
+
+    <!-- Ability to add new clauses-->
+    <script>
+      function createConditionRow(withLogical, logicalType) {
+        const row = document.createElement("div");
+        row.classList.add("condition-row");
+
+        if (withLogical) {
+          const logicalSelect = document.createElement("select");
+
+          const andOption = document.createElement("option");
+          andOption.value = "AND";
+          andOption.textContent = "AND";
+
+          const orOption = document.createElement("option");
+          orOption.value = "OR";
+          orOption.textContent = "OR";
+
+          logicalSelect.appendChild(andOption);
+          logicalSelect.appendChild(orOption);
+
+          logicalSelect.value = logicalType;
+          row.appendChild(logicalSelect);
+        }
+
+        const attribute = document.createElement("select");
+        ["RecipeName", "Servings", "Cuisine", "TotalTime", "AuthorID"].forEach(
+          (attr) => {
+            const option = document.createElement("option");
+            option.value = attr;
+            option.textContent = attr;
+            attribute.appendChild(option);
+          }
+        );
+
+        const operator = document.createElement("select");
+        ["=", "<", ">", "<=", ">="].forEach((op) => {
+          const option = document.createElement("option");
+          option.value = op;
+          option.textContent = op;
+          operator.appendChild(option);
+        });
+
+        const input = document.createElement("input");
+        input.type = "text";
+        input.placeholder = "Enter value";
+        input.required = true;
+
+        row.appendChild(attribute);
+        row.appendChild(operator);
+        row.appendChild(input);
+
+        return row;
+      }
+      document.getElementById("add-and").addEventListener("click", function () {
+        const container = document.getElementById("conditions-container");
+        container.appendChild(createConditionRow(true, "AND"));
+      });
+
+      document.getElementById("add-or").addEventListener("click", function () {
+        const container = document.getElementById("conditions-container");
+        container.appendChild(createConditionRow(true, "OR"));
+      });
+    </script>
+
+    <!-- A placeholder to display messages related to the select operation. -->
+    <div id="selectRecipeoResultMsg"></div>
+
+    <h3>Result:</h3>
+    <table id="recipeSelectTable" border="1">
+      <thead>
+        <tr>
+          <th>RecipeName</th>
+          <th>Servings</th>
+          <th>Cuisine</th>
+          <th>TotalTime</th>
+          <th>AuthorID</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <br />
+    <hr />
+    <br />
+    <!-- ========================================================================= -->
+
+    <!-- ===================================================================================== -->
+    <!-- External JavaScript file that contains the functionality/logic for the operations above. -->
+    <script src="scripts.js"></script>
+  </body>
+</html>
